@@ -74,6 +74,8 @@ class ElementFamily(enum.IntEnum):
     Hermite = 12
 
     iso = 13
+    
+    HCT = 14
 
 class FiniteElement_float32:
     def tabulate(self, arg0: int, arg1: Annotated[ArrayLike, dict(dtype='float32', shape=(None, None), order='C', writable=False)], /) -> Annotated[ArrayLike, dict(dtype='float32')]: ...

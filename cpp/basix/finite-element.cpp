@@ -15,6 +15,7 @@
 #include "e-raviart-thomas.h"
 #include "e-regge.h"
 #include "e-serendipity.h"
+#include "e-hsieh-clough-tocher.h"
 #include "math.h"
 #include "polyset.h"
 #include <algorithm>
@@ -215,7 +216,8 @@ basix::create_element(element::family family, cell::type cell, int degree,
          {element::family::CR, {false, false}},
          {element::family::bubble, {false, false}},
          {element::family::Hermite, {false, false}},
-         {element::family::iso, {true, false}}};
+         {element::family::iso, {true, false}},
+         {element::family::HCT, {true, false}}};
   if (auto it = has_variant.find(family); it != has_variant.end())
   {
     if (it->second[0] == false and lvariant != element::lagrange_variant::unset)
@@ -308,6 +310,8 @@ basix::create_element(element::family family, cell::type cell, int degree,
     return element::create_iso<T>(cell, degree, lvariant, discontinuous);
   case element::family::Hermite:
     return element::create_hermite<T>(cell, degree, discontinuous);
+  case element::family::HCT:
+    return element::create_hct<T>(cell, degree, discontinuous);
   default:
     throw std::runtime_error("Element family not found.");
   }

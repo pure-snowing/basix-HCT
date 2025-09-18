@@ -32,6 +32,7 @@ elements = [
     basix.ElementFamily.Hermite,
     basix.ElementFamily.iso,
     basix.ElementFamily.custom,
+    basix.ElementFamily.HCT
 ]
 
 variants = [

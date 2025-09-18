@@ -57,5 +57,6 @@ enum class family
   HHJ = 11,
   Hermite = 12,
   iso = 13,
+  HCT = 14,
 };
 } // namespace basix::element
