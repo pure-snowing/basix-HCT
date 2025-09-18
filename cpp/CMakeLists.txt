@@ -75,6 +75,7 @@ set(HEADERS_basix
   ${CMAKE_CURRENT_SOURCE_DIR}/basix/e-bubble.h
   ${CMAKE_CURRENT_SOURCE_DIR}/basix/e-serendipity.h
   ${CMAKE_CURRENT_SOURCE_DIR}/basix/e-hermite.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/basix/e-hsieh-clough-tocher.h
   ${CMAKE_CURRENT_SOURCE_DIR}/basix/mdspan.hpp
   ${CMAKE_CURRENT_SOURCE_DIR}/basix/types.h
   ${CMAKE_CURRENT_BINARY_DIR}/basix/version.h)
@@ -101,7 +102,8 @@ target_sources(basix PRIVATE
   ${CMAKE_CURRENT_SOURCE_DIR}/basix/e-crouzeix-raviart.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/basix/e-bubble.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/basix/e-hermite.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/basix/e-serendipity.cpp)
+  ${CMAKE_CURRENT_SOURCE_DIR}/basix/e-serendipity.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/basix/e-hsieh-clough-tocher.cpp)
 
 # Configure the library
 set_target_properties(basix PROPERTIES PUBLIC_HEADER basix/finite-element.h)

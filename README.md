@@ -96,6 +96,7 @@ The following elements are supported on a triangle:
   - [Bubble](https://defelement.org/elements/bubble.html)
   - [Hermite](https://defelement.org/elements/hermite.html)
   - [iso](https://defelement.org/elements/p1-iso-p2.html)
+  - [Hsieh–Clough–Tocher](https://defelement.org/elements/hsieh-clough-tocher.html)
 
 
 ### Quadrilateral

@@ -560,7 +560,8 @@ NB_MODULE(_basixcpp, m)
       .value("DPC", element::family::DPC)
       .value("CR", element::family::CR)
       .value("Hermite", element::family::Hermite)
-      .value("iso", element::family::iso);
+      .value("iso", element::family::iso)
+      .value("HCT", element::family::HCT);
 
   nb::enum_<element::lagrange_variant>(
       m, "LagrangeVariant", nb::is_arithmetic(), "Lagrange element variant.")
