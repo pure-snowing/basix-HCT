@@ -18,21 +18,20 @@ using namespace basix;
 
 //----------------------------------------------------------------------------
 template <std::floating_point T>
-FiniteElement<T> basix::element::create_hermite(cell::type celltype, int degree,
+FiniteElement<T> basix::element::create_hct(cell::type celltype, int degree,
                                                 bool discontinuous)
 {
-  if (celltype != cell::type::interval and celltype != cell::type::triangle
-      and celltype != cell::type::tetrahedron)
+  if (celltype != cell::type::triangle)
   {
     throw std::runtime_error("Unsupported cell type");
   }
 
   if (degree != 3)
-    throw std::runtime_error("Hermite element must have degree 3");
+    throw std::runtime_error("Hsieh-Clough-Tocher element must have degree 3");
 
-  const std::size_t tdim = cell::topological_dimension(celltype);
-  const std::size_t ndofs
-      = polyset::dim(celltype, polyset::type::standard, degree);
+  // Only triangle and each edge contains one dof.
+  const std::size_t tdim = 2;
+  const std::size_t ndofs = 12;
   const std::vector<std::vector<std::vector<int>>> topology
       = cell::topology(celltype);
 
@@ -43,7 +42,7 @@ FiniteElement<T> basix::element::create_hermite(cell::type celltype, int degree,
   std::array<std::vector<impl::mdarray_t<T, 2>>, 4> x;
   std::array<std::vector<impl::mdarray_t<T, 4>>, 4> M;
 
-  // Loop over entities of dimension 'dim'
+  // Vertices -- 3 * 3 dofs
   for (std::size_t e = 0; e < topology[0].size(); ++e)
   {
     const auto [entity_x, entity_shape]
@@ -55,32 +54,19 @@ FiniteElement<T> basix::element::create_hermite(cell::type celltype, int degree,
       _M(d + 1, 0, 0, d + 1) = 1;
   }
 
+  // Edges -- 3 * 1 dofs
+  const auto facet_normols = cell::facet_normals<T>(celltype);
   for (std::size_t e = 0; e < topology[1].size(); ++e)
   {
     x[1].emplace_back(0, tdim);
     M[1].emplace_back(0, 1, 0, deriv_count);
   }
 
-  if (tdim >= 2)
+  // Facets -- 0 dofs
+  for (std::size_t e = 0; e < topology[2].size(); ++e)
   {
-    for (std::size_t e = 0; e < topology[2].size(); ++e)
-    {
-      auto& _x = x[2].emplace_back(1, tdim);
-      std::vector<T> midpoint(tdim, 0);
-      for (auto p : topology[2][e])
-        for (std::size_t i = 0; i < geometry.extent(1); ++i)
-          _x(0, i) += geometry(p, i) / topology[2][e].size();
-      auto& _M = M[2].emplace_back(1, 1, 1, deriv_count);
-      _M(0, 0, 0, 0) = 1;
-    }
-  }
-
-  if (tdim == 3)
-  {
-    x[3] = std::vector<impl::mdarray_t<T, 2>>(topology[2].size(),
-                                              impl::mdarray_t<T, 2>(0, tdim));
-    M[3] = std::vector<impl::mdarray_t<T, 4>>(
-        topology[2].size(), impl::mdarray_t<T, 4>(0, 1, 0, deriv_count));
+    x[1].emplace_back(0, tdim);
+    M[1].emplace_back(0, 1, 0, deriv_count);
   }
 
   std::array<std::vector<mdspan_t<const T, 2>>, 4> xview = impl::to_mdspan(x);
@@ -100,12 +86,12 @@ FiniteElement<T> basix::element::create_hermite(cell::type celltype, int degree,
   sobolev::space space
       = discontinuous ? sobolev::space::L2 : sobolev::space::H2;
   return FiniteElement<T>(
-      element::family::Hermite, celltype, polyset::type::standard, degree, {},
+      element::family::HCT, celltype, polyset::type::standard, degree, {},
       impl::mdspan_t<T, 2>(math::eye<T>(ndofs).data(), ndofs, ndofs), xview,
       Mview, 1, maps::type::identity, space, discontinuous, -1, degree,
       element::lagrange_variant::unset, element::dpc_variant::unset);
 }
 //-----------------------------------------------------------------------------
-template FiniteElement<float> element::create_hermite(cell::type, int, bool);
-template FiniteElement<double> element::create_hermite(cell::type, int, bool);
+template FiniteElement<float> element::create_hct(cell::type, int, bool);
+template FiniteElement<double> element::create_hct(cell::type, int, bool);
 //-----------------------------------------------------------------------------
